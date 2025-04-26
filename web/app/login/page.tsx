@@ -206,6 +206,7 @@ export default function LoginPage() {
         dispatch({ type: 'SET_ERROR', error: 'Login successful! Redirecting...' });
         localStorage.setItem('token', loginData.token);
         localStorage.setItem('userId', loginData.user.id.toString());
+        localStorage.setItem('user', JSON.stringify(loginData.user));
         localStorage.setItem('isAuthenticated', 'true');
         setTimeout(() => {
           router.push('/homepage');

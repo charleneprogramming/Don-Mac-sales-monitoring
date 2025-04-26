@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { CSSProperties } from 'react';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import { useEffect} from 'react';
 
 interface Styles {
   navbar: CSSProperties;
@@ -19,6 +20,16 @@ interface Styles {
 
 export default function Navbar(): JSX.Element {
 
+  const [name, setName] = useState<string | null>(null);
+
+  useEffect(() => {
+    const user = localStorage.getItem('user');
+    if (user) {
+      const userParsed = JSON.parse(user);
+      setName(userParsed.name);
+    }
+  }, []);
+
   return (
     <div style={styles.navbar}>
        {/* Avatar Section */}
@@ -28,8 +39,11 @@ export default function Navbar(): JSX.Element {
           alt="Admin Avatar"
           style={styles.avatar}
         />
-        <h3 className='tracking-[.15em]' style={styles.avatarName}>CASHIER {}</h3>
-      </div>
+        <h3 className="tracking-[.15em]" style={styles.avatarName}>
+          <span style={{ fontSize: '1.5rem'}}>CASHIER </span>
+          <span style={{ fontSize: '1.5rem', fontWeight: 'bold', textTransform: 'uppercase', }}>{name}</span>
+        </h3>
+        </div>
 
 
 
