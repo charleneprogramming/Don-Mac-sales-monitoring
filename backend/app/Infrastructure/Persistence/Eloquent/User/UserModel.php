@@ -10,6 +10,8 @@ class UserModel extends Model
 
     protected $fillable = [
         'username',
+        'name',
+        'contact_number',
         'password',
         'api_token',
     ];

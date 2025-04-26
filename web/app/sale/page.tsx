@@ -90,7 +90,7 @@ export default function Sales(): JSX.Element {
                         </div>
 
                         {/* Add To Cart (Right Side) */}
-                        <div className="flex-1 bg-white rounded-lg shadow-lg p-6">
+                        <div className="flex-1 rounded-lg shadow-lg p-6">
                             <div className="justify-between flex">
                             <h2 className="text-2xl font-bold text-[#4b3025] mb-4">Your Cart</h2>
                             <div className="flex items-center space-x-4">

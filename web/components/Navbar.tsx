@@ -8,6 +8,7 @@ interface Styles {
   avatarContainer: CSSProperties;
   avatar: CSSProperties;
   avatarName: CSSProperties;
+  userName: CSSProperties;
   list: CSSProperties;
   listItem: CSSProperties;
   link: CSSProperties;
@@ -27,7 +28,7 @@ export default function Navbar(): JSX.Element {
           alt="Admin Avatar"
           style={styles.avatar}
         />
-        <h3 className='tracking-[.15em]' style={styles.avatarName}>CASHIER</h3>
+        <h3 className='tracking-[.15em]' style={styles.avatarName}>CASHIER {}</h3>
       </div>
 
 
@@ -102,6 +103,13 @@ const styles: Styles = {
   },
   avatarName: {
     fontSize: '1.5rem',
+  },
+  userName:{
+    fontSize: '1rem',
+    color: '#fff',
+    textTransform: 'uppercase',
+    letterSpacing: '2px',
+    fontWeight: 'bold',
   },
   list: {
     display: 'flex',

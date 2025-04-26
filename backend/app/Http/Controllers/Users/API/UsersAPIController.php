@@ -20,7 +20,7 @@ class UsersAPIController extends Controller
 
     public function findAll()
     {
-        $users = UserModel::all(['id', 'username', 'created_at', 'updated_at']);
+        $users = UserModel::all(['id', 'username',  'name', 'contact_number', 'created_at', 'updated_at']);
 
         return response()->json([
             'users' => $users,
@@ -34,6 +34,8 @@ class UsersAPIController extends Controller
             $validatedData = $request->validate([
                 'username' => 'required|string|unique:users,username',
                 'password' => 'required|string|min:6',
+                'name' => 'required|string|max:255',
+                'contact_number' => 'nullable|string|max:20',
             ]);
 
             $this->registerUser->create(
@@ -119,6 +121,8 @@ class UsersAPIController extends Controller
                 'user' => [
                     'id' => $user->id,
                     'username' => $user->username,
+                    'name' => $user->name,
+                    'contact_number' => $user->contact_number,
                 ],
                 'message' => 'User found successfully',
             ]);

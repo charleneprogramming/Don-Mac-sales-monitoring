@@ -124,7 +124,7 @@ export default function TransactionPage() {
         });
 
     return (
-        <div className="min-h-screen bg-[#fff8e7]">
+        <div className="min-h-screen bg-[#faf2e9]">
             {/* Navbar always visible */}
             <Navbar />
 

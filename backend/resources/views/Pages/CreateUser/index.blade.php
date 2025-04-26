@@ -30,18 +30,6 @@
                         <form id="userForm" action="{{ route('users.store') }}" method="POST" class="mb-5">
                             @csrf
                             <input type="hidden" id="userId" name="user_id">
-                            <div class="mb-3">
-                                <label for="name" class="form-label">Name</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                    <input type="text" name="name" id="name"
-                                        class="form-control @error('name') is-invalid @enderror"
-                                        value="{{ old('name') }}" placeholder="Enter name">
-                                </div>
-                                @error('name')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
-                            </div>
 
                             <div class="mb-3">
                                 <label for="username" class="form-label">Username</label>
@@ -52,6 +40,19 @@
                                         value="{{ old('username') }}" placeholder="Enter username">
                                 </div>
                                 @error('username')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Name</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    <input type="text" name="name" id="name"
+                                        class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}"
+                                        placeholder="Enter name">
+                                </div>
+                                @error('name')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -114,52 +115,51 @@
                 </div>
             </div>
             <div class="col-md-6">
-                         <!-- Users Table -->
-                         <div class="card mt-4">
-                            <div class="card-header bg-light">
-                                <h5 class="mb-0">Existing Users</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>Username</th>
-                                                <th>Created At</th>
-                                                <th>User Type</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($users as $user)
-                                                <tr>
-                                                    <td>{{ $user->username }}</td>
-                                                    <td>{{ $user->created_at->format('Y-m-d H:i:s') }}</td>
-                                                    <td>{{ $user->isAdmin == 1 ? 'Admin' : 'Cashier User' }}</td>
-                                                    <td>
-                                                        <button type="button" class="btn btn-warning btn-sm edit-user"
-                                                            data-id="{{ $user->id }}"
-                                                            data-username="{{ $user->username }}"
-                                                            data-user-type="{{ $user->isAdmin ? '1' : '2' }}">
-                                                            <i class="fas fa-edit"></i>
-                                                        </button>
-                                                        <form action="{{ route('users.destroy', $user->id) }}"
-                                                            method="POST" class="d-inline"
-                                                            onsubmit="return confirm('Are you sure you want to delete this user?')">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-danger btn-sm">
-                                                                <i class="fas fa-trash-alt"></i>
-                                                            </button>
-                                                        </form>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                <!-- Users Table -->
+                <div class="card mt-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Existing Users</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>Created At</th>
+                                        <th>User Type</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($users as $user)
+                                        <tr>
+                                            <td>{{ $user->username }}</td>
+                                            <td>{{ $user->created_at->format('Y-m-d H:i:s') }}</td>
+                                            <td>{{ $user->isAdmin == 1 ? 'Admin' : 'Cashier User' }}</td>
+                                            <td>
+                                                <button type="button" class="btn btn-warning btn-sm edit-user"
+                                                    data-id="{{ $user->id }}" data-username="{{ $user->username }}"
+                                                    data-user-type="{{ $user->isAdmin ? '1' : '2' }}">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <form action="{{ route('users.destroy', $user->id) }}" method="POST"
+                                                    class="d-inline"
+                                                    onsubmit="return confirm('Are you sure you want to delete this user?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
