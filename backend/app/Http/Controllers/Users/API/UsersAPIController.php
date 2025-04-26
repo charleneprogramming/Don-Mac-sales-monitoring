@@ -36,11 +36,17 @@ class UsersAPIController extends Controller
                 'password' => 'required|string|min:6',
                 'name' => 'required|string|max:255',
                 'contact_number' => 'nullable|string|max:20',
+                'user_type' => 'required|string',
             ]);
+
+            $isAdmin = $validatedData['user_type'] == '1' ? true : false;
 
             $this->registerUser->create(
                 $validatedData['username'],
-                Hash::make($validatedData['password'])
+                Hash::make($validatedData['password']),
+                $isAdmin,
+                $validatedData['name'],
+                $validatedData['contact_number']
             );
 
             return response()->json([

@@ -13,6 +13,7 @@ class EloquentUserRepository implements UserRepository
 {
     public function create(User $user): void
     {
+
         $data = new UserModel;
         $data->username = $user->getUsername();
         $data->password = $user->getPassword();
@@ -45,7 +46,13 @@ class EloquentUserRepository implements UserRepository
             return null;
         }
 
-        return new User($data->id, $data->username);
+        return new User(
+            $data->id, 
+            $data->username,
+            $data->password,
+            $data->isAdmin,
+            $data->name,
+            $data->contact_number);
     }
 
     public function findAll(): array
@@ -56,6 +63,8 @@ class EloquentUserRepository implements UserRepository
             return new User(
                 $user->id,
                 $user->username,
+                $user->password,
+                $user->isAdmin,
                 $user->name,
                 $user->contact_number
             );
@@ -78,7 +87,13 @@ class EloquentUserRepository implements UserRepository
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return [
-            'user' => $user,
+            'user' => [
+                'id' => $user->id,
+                'username' => $user->username,
+                'name' => $user->name,
+                'contact_number' => $user->contact_number,
+                'isAdmin' => $user->isAdmin,
+            ],
             'token' => $token,
             'token_type' => 'Bearer',
         ];

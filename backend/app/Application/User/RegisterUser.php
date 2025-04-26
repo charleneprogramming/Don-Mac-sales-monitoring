@@ -14,7 +14,7 @@ class RegisterUser
         $this->userRepository = $userRepository;
     }
 
-    public function create(string $userName, string $password, $isAdmin, ?string $name, ?string $contactNumber)
+    public function create(string $userName, string $password, ?string $name, ?string $contactNumber, $isAdmin)
     {
         $validate = $this->userRepository->findByUsername($userName);
         if ($validate) {

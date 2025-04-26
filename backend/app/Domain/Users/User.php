@@ -20,12 +20,16 @@ class User
         ?int $id = null,
         ?string $username = null,
         ?string $password = null,
-        ?bool $isAdmin = null
+        ?bool $isAdmin = null,
+        ?string $name = null, 
+        ?string $contactNumber = null
     ) {
         $this->id = $id ?? 0;
         $this->username = $username ?? '';
         $this->password = $password ?? '';
         $this->isAdmin = $isAdmin ?? false;
+        $this->name = $name ?? '';  
+        $this->contactNumber = $contactNumber ?? '';  
     }
 
     public function getID(): ?int
@@ -46,5 +50,15 @@ class User
     public function getIsAdmin(): bool
     {
         return $this->isAdmin;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function getContactNumber(): ?string
+    {
+        return $this->contactNumber;
     }
 }

@@ -44,9 +44,9 @@ class UserWEBController extends Controller
             $this->registerUser->create(
                 $validated['username'],
                 Hash::make($validated['password']),
+                $isAdmin,
                 $validated['name'],
                 $validated['contact_number'],
-                $isAdmin,
             );
 
             return redirect()->back()->with('success', 'User created successfully');
