@@ -17,6 +17,8 @@ class EloquentUserRepository implements UserRepository
         $data->username = $user->getUsername();
         $data->password = $user->getPassword();
         $data->isAdmin = $user->getIsAdmin();
+        $data->name = $user->getName();
+        $data->contact_number = $user->getContactNumber();
         $data->save();
     }
 
@@ -26,6 +28,8 @@ class EloquentUserRepository implements UserRepository
         $data->id = $user->getID();
         $data->username = $user->getUsername();
         $data->password = $user->getPassword();
+        $data->name = $user->getName();
+        $data->contact_number = $user->getContactNumber();
         $data->save();
     }
 
@@ -51,7 +55,9 @@ class EloquentUserRepository implements UserRepository
         return $users->map(function ($user) {
             return new User(
                 $user->id,
-                $user->username
+                $user->username,
+                $user->name,
+                $user->contact_number
             );
         })->toArray();
     }

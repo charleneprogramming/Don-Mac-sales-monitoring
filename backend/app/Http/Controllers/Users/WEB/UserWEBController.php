@@ -29,9 +29,9 @@ class UserWEBController extends Controller
         $validated = $request->validate([
             'username' => 'required|string|unique:users,username',
             'password' => 'required|string|min:6',
-            'user_type' => 'required|string',
             'name' => 'required|string|max:255',
             'contact_number' => 'nullable|string|max:20', 
+            'user_type' => 'required|string',
         ]);
 
         if ($request->user_type == '1') {
@@ -44,9 +44,9 @@ class UserWEBController extends Controller
             $this->registerUser->create(
                 $validated['username'],
                 Hash::make($validated['password']),
-                $isAdmin,
                 $validated['name'],
                 $validated['contact_number'],
+                $isAdmin,
             );
 
             return redirect()->back()->with('success', 'User created successfully');

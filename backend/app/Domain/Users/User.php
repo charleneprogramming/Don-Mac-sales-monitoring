@@ -12,6 +12,10 @@ class User
 
     private bool $isAdmin;
 
+    private ?string $name;  
+   
+    private ?string $contactNumber;
+
     public function __construct(
         ?int $id = null,
         ?string $username = null,

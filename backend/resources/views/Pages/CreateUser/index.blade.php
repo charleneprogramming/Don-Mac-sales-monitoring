@@ -58,14 +58,14 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="contact" class="form-label">Contact number</label>
+                                <label for="contact_number" class="form-label">Contact number</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fa-solid fa-address-book"></i></span>
-                                    <input type="number" name="contact" id="contact"
-                                        class="form-control @error('contact') is-invalid @enderror"
-                                        value="{{ old('contact') }}" placeholder="Enter contact number">
+                                    <input type="number" name="contact_number" id="contact_number"
+                                        class="form-control @error('contact_number') is-invalid @enderror"
+                                        value="{{ old('contact_number') }}" placeholder="Enter contact number">
                                 </div>
-                                @error('contact')
+                                @error('contact_number')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
