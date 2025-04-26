@@ -43,7 +43,7 @@ export default function ImageCarousel() {
       >
         {images.map((image, idx) => (
           <SwiperSlide key={idx}>
-            <div style={{ position: 'relative', width: '100%', padding: '100px' }}>
+            <div style={{ position: 'relative', width: '100%', padding: '80px' }}>
               <img
                 src={image.src}
                 alt={`Slide ${idx + 1}`}
@@ -58,7 +58,7 @@ export default function ImageCarousel() {
                 <div
                   style={{
                     position: 'absolute',
-                    bottom: '10px',
+                    bottom: '50px',
                     left: '50%',
                     transform: 'translateX(-50%)',
                     color: '#9a4c2e',
@@ -77,3 +77,5 @@ export default function ImageCarousel() {
     </div>
   );
 }
+
+

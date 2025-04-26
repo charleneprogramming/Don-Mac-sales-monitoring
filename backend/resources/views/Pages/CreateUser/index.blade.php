@@ -135,7 +135,7 @@
                                                 <tr>
                                                     <td>{{ $user->username }}</td>
                                                     <td>{{ $user->created_at->format('Y-m-d H:i:s') }}</td>
-                                                    <td>{{ $user->isAdmin == 1 ? 'Admin' : 'User Admin' }}</td>
+                                                    <td>{{ $user->isAdmin == 1 ? 'Admin' : 'Cashier User' }}</td>
                                                     <td>
                                                         <button type="button" class="btn btn-warning btn-sm edit-user"
                                                             data-id="{{ $user->id }}"
