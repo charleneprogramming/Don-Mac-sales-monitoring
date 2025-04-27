@@ -20,7 +20,7 @@ class EloquentProductRepository implements ProductRepository
                 (float) $productModel->product_price,
                 $productModel->description,
                 (int) $productModel->product_stock,
-                // (int) $productModel->userID
+                (int) $productModel->user_id
             );
         })->all();
     }
