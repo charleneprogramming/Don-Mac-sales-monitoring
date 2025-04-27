@@ -35,7 +35,7 @@ class EloquentProductRepository implements ProductRepository
         $productModel->product_price = $product->getProduct_price();
         $productModel->product_stock = $product->getProduct_stock();
         $productModel->description = $product->getDescription();
-        // $productModel->userID = $product->getUserID();
+        $productModel->user_id = $product->getUserID();
         $productModel->save();
     }
 
@@ -49,7 +49,7 @@ class EloquentProductRepository implements ProductRepository
             $existingProduct->product_price = $product->getProduct_price();
             $existingProduct->product_stock = $product->getProduct_stock();
             $existingProduct->description = $product->getDescription();
-            // $existingProduct->userID = $product->getUserID();
+            $existingProduct->user_id = $product->getUserID();
             $existingProduct->save();
         } else {
             $productModel = new ProductModel;
@@ -60,7 +60,7 @@ class EloquentProductRepository implements ProductRepository
             $productModel->product_price = $product->getproduct_price();
             $productModel->product_stock = $product->getProduct_stock();
             $productModel->description = $product->getDescription();
-            // $productModel->userID = $product->getUserID();
+            $productModel->user_id = $product->getUserID();
             $productModel->save();
         }
 
@@ -81,7 +81,7 @@ class EloquentProductRepository implements ProductRepository
             $productModel->product_price,
             $productModel->product_stock,
             $productModel->description,
-            // $productModel->userID
+            $productModel->user_id
         );
     }
 
@@ -100,7 +100,7 @@ class EloquentProductRepository implements ProductRepository
             $productModel->product_price,
             $productModel->description,
             $productModel->product_stock,
-            // $productModel->userID
+            $productModel->user_id
         );
     }
 
@@ -133,37 +133,58 @@ class EloquentProductRepository implements ProductRepository
     //     }
 
     // }
-    public function findByUserID(int $userID)
+    public function findByUserID(int $userID): array
     {
-        //hello
-        return ProductModel::where('userID', $userID)->get();
+    
+        $products = ProductModel::where('user_id', $userID)->get();
+
+        return $products->toArray(); 
     }
 
-    public function findByProductNameAndUserID(string $productName, int $userID)
+    public function findByProductNameAndUserID(string $product_name, int $userID): ?Product
     {
-        return ProductModel::where('product_name', $productName)
-                           ->where('userID', $userID)
-                           ->first();
-    }
+        // Retrieve the product from the database using product_name and userID
+        $productModel = ProductModel::where('product_name', $product_name)
+                                    ->where('user_id', $userID)
+                                    ->first();
 
-    public function findByProductName(string $product_name): ?Product
-    {
-        $productModel = ProductModel::where('product_name', $product_name)->first();
-        if (! $productModel) {
+        // If no product is found, return null
+        if (!$productModel) {
             return null;
         }
 
+        // Return the Product object
         return new Product(
-            null,
+            $productModel->id,
             $productModel->product_id,
             $productModel->product_image,
             $productModel->product_name,
-            $productModel->product_price,
+            (float) $productModel->product_price,
             $productModel->description,
-            $productModel->product_stock,
-            // $productModel->userID
+            (int) $productModel->product_stock,
+            $productModel->user_id
         );
     }
+
+    
+    // public function findByProductName(string $product_name): ?Product
+    // {
+    //     $productModel = ProductModel::where('product_name', $product_name)->first();
+    //     if (! $productModel) {
+    //         return null;
+    //     }
+
+    //     return new Product(
+    //         null,
+    //         $productModel->product_id,
+    //         $productModel->product_image,
+    //         $productModel->product_name,
+    //         $productModel->product_price,
+    //         $productModel->description,
+    //         $productModel->product_stock,
+    //         // $productModel->userID
+    //     );
+    // }
 
     // public function findByProductNameAndUserID(string $product_name, int $userID): ?Product
     // {
