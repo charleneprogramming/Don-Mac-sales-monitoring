@@ -20,7 +20,7 @@ class EloquentProductRepository implements ProductRepository
                 (float) $productModel->product_price,
                 $productModel->description,
                 (int) $productModel->product_stock,
-                (int) $productModel->user_id
+                // (int) $productModel->user_id
             );
         })->all();
     }
@@ -35,7 +35,7 @@ class EloquentProductRepository implements ProductRepository
         $productModel->product_price = $product->getProduct_price();
         $productModel->product_stock = $product->getProduct_stock();
         $productModel->description = $product->getDescription();
-        $productModel->user_id = $product->getUserID();
+        // $productModel->user_id = $product->getUserID();
         $productModel->save();
     }
 
@@ -49,7 +49,7 @@ class EloquentProductRepository implements ProductRepository
             $existingProduct->product_price = $product->getProduct_price();
             $existingProduct->product_stock = $product->getProduct_stock();
             $existingProduct->description = $product->getDescription();
-            $existingProduct->user_id = $product->getUserID();
+            // $existingProduct->user_id = $product->getUserID();
             $existingProduct->save();
         } else {
             $productModel = new ProductModel;
@@ -60,7 +60,7 @@ class EloquentProductRepository implements ProductRepository
             $productModel->product_price = $product->getproduct_price();
             $productModel->product_stock = $product->getProduct_stock();
             $productModel->description = $product->getDescription();
-            $productModel->user_id = $product->getUserID();
+            // $productModel->user_id = $product->getUserID();
             $productModel->save();
         }
 
@@ -80,8 +80,8 @@ class EloquentProductRepository implements ProductRepository
             $productModel->product_image,
             $productModel->product_price,
             $productModel->product_stock,
-            $productModel->description,
-            $productModel->user_id
+            $productModel->description
+            // $productModel->user_id
         );
     }
 
@@ -100,7 +100,7 @@ class EloquentProductRepository implements ProductRepository
             $productModel->product_price,
             $productModel->description,
             $productModel->product_stock,
-            $productModel->user_id
+            // $productModel->user_id
         );
     }
 

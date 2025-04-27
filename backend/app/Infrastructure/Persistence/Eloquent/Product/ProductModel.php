@@ -11,12 +11,12 @@ class ProductModel extends Model
 
     protected $table = 'product';
 
-    protected $fillable = ['id', 'product_id', 'product_image', 'product_name', 'product_price', 'product_stock', 'description', 'user_id'];
+    protected $fillable = ['id', 'product_id', 'product_image', 'product_name', 'product_price', 'product_stock', 'description'];
     
 
-    public function user()
-    {
+    // public function user()
+    // {
         
-        return $this->belongsTo(User::class, 'user_id');
-    }
+    //     return $this->belongsTo(User::class, 'user_id');
+    // }
 }
