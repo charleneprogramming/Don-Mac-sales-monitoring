@@ -169,7 +169,7 @@ class ProductAPIController extends Controller
     public function findByUserID($user_id): JsonResponse
     {
         $products = $this->registerProducts->findByUserID((int) $user_id);
-
+        
         if (empty($products)) {
             $products = [];
         } else {

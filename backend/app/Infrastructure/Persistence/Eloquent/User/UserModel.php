@@ -20,4 +20,8 @@ class UserModel extends Model
         'password',
         'api_token',
     ];
+    public function products()
+    {
+        return $this->hasMany(ProductModel::class, 'userID');
+    }
 }

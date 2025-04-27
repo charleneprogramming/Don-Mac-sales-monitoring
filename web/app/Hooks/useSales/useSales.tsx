@@ -17,8 +17,10 @@ export const useSales = () => {
     const [showReceipt, setShowReceipt] = useState(false);
     const [currentTransaction, setCurrentTransaction] = useState<any>(null);
 
+
     const fetchProducts = async () => {
         try {
+            
             const token = localStorage.getItem('token');
             const userId = localStorage.getItem('userId');
 
@@ -27,6 +29,8 @@ export const useSales = () => {
                 setLoading(false);
                 return;
             }
+
+            console.log(`Fetching products for userId: ${userId} with token: ${token}`);
 
             const response = await fetch(`http://localhost:8000/api/products/${userId}`, {
                 headers: {

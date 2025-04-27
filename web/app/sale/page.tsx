@@ -33,6 +33,7 @@ export default function Sales(): JSX.Element {
                 ? { ...item, quantity: newQuantity }
                 : item
         ));
+        console.log(products);
     };
 
     const removeFromCart = (productId: string) => {
