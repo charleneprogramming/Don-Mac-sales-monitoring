@@ -20,7 +20,7 @@ class EloquentProductRepository implements ProductRepository
                 (float) $productModel->product_price,
                 $productModel->description,
                 (int) $productModel->product_stock,
-                (int) $productModel->userID
+                // (int) $productModel->userID
             );
         })->all();
     }
@@ -35,7 +35,7 @@ class EloquentProductRepository implements ProductRepository
         $productModel->product_price = $product->getProduct_price();
         $productModel->product_stock = $product->getProduct_stock();
         $productModel->description = $product->getDescription();
-        $productModel->userID = $product->getUserID();
+        // $productModel->userID = $product->getUserID();
         $productModel->save();
     }
 
@@ -49,7 +49,7 @@ class EloquentProductRepository implements ProductRepository
             $existingProduct->product_price = $product->getProduct_price();
             $existingProduct->product_stock = $product->getProduct_stock();
             $existingProduct->description = $product->getDescription();
-            $existingProduct->userID = $product->getUserID();
+            // $existingProduct->userID = $product->getUserID();
             $existingProduct->save();
         } else {
             $productModel = new ProductModel;
@@ -60,7 +60,7 @@ class EloquentProductRepository implements ProductRepository
             $productModel->product_price = $product->getproduct_price();
             $productModel->product_stock = $product->getProduct_stock();
             $productModel->description = $product->getDescription();
-            $productModel->userID = $product->getUserID();
+            // $productModel->userID = $product->getUserID();
             $productModel->save();
         }
 
@@ -81,7 +81,7 @@ class EloquentProductRepository implements ProductRepository
             $productModel->product_price,
             $productModel->product_stock,
             $productModel->description,
-            $productModel->userID
+            // $productModel->userID
         );
     }
 
@@ -100,7 +100,7 @@ class EloquentProductRepository implements ProductRepository
             $productModel->product_price,
             $productModel->description,
             $productModel->product_stock,
-            $productModel->userID
+            // $productModel->userID
         );
     }
 
@@ -109,34 +109,45 @@ class EloquentProductRepository implements ProductRepository
         ProductModel::where('product_id', $product_id)->delete();
     }
 
-    public function findByUserID(int $userID): array
+    // public function findByUserID(int $userID): array
+    // {
+    //     $products = ProductModel::where('userID', $userID)->whereNull('deleted_at')->get();
+
+    //     if (count($products) === 0) {
+    //         return [];
+    //     } else {
+    //         // dd($products);
+
+    //         return $products->map(function ($productModel) {
+    //             return new Product(
+    //                 $productModel->id,
+    //                 $productModel->product_id,
+    //                 $productModel->product_image,
+    //                 $productModel->product_name,
+    //                 (float) $productModel->product_price,
+    //                 $productModel->description,
+    //                 (int) $productModel->product_stock,
+    //                 (int) $productModel->userID
+    //             );
+    //         })->toArray();
+    //     }
+
+    // }
+    public function findByUserID(int $userID)
     {
-        $products = ProductModel::where('userID', $userID)->whereNull('deleted_at')->get();
-
-        if (count($products) === 0) {
-            return [];
-        } else {
-            // dd($products);
-
-            return $products->map(function ($productModel) {
-                return new Product(
-                    $productModel->id,
-                    $productModel->product_id,
-                    $productModel->product_image,
-                    $productModel->product_name,
-                    (float) $productModel->product_price,
-                    $productModel->description,
-                    (int) $productModel->product_stock,
-                    (int) $productModel->userID
-                );
-            })->toArray();
-        }
-
+        return ProductModel::where('userID', $userID)->get();
+    }
+    
+    public function findByProductNameAndUserID(string $productName, int $userID)
+    {
+        return ProductModel::where('product_name', $productName)
+                           ->where('userID', $userID)
+                           ->first();
     }
 
-    public function findByProductNameAndUserID(string $product_name, int $userID): ?Product
+    public function findByProductName(string $product_name): ?Product
     {
-        $productModel = ProductModel::where('product_name', $product_name)->where('userID', $userID)->first();
+        $productModel = ProductModel::where('product_name', $product_name)->first();
         if (! $productModel) {
             return null;
         }
@@ -149,9 +160,28 @@ class EloquentProductRepository implements ProductRepository
             $productModel->product_price,
             $productModel->description,
             $productModel->product_stock,
-            $productModel->userID
+            // $productModel->userID
         );
     }
+
+    // public function findByProductNameAndUserID(string $product_name, int $userID): ?Product
+    // {
+    //     $productModel = ProductModel::where('product_name', $product_name)->where('userID', $userID)->first();
+    //     if (! $productModel) {
+    //         return null;
+    //     }
+
+    //     return new Product(
+    //         null,
+    //         $productModel->product_id,
+    //         $productModel->product_image,
+    //         $productModel->product_name,
+    //         $productModel->product_price,
+    //         $productModel->description,
+    //         $productModel->product_stock,
+    //         // $productModel->userID
+    //     );
+    // }
 
     // public function create(array $data)
     // {

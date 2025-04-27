@@ -21,7 +21,7 @@ class ProductWebController extends Controller
 
     public function index($user_id)
     {
-        $products = $this->registerProducts->findByUserID((int) $user_id);
+        $products = $this->registerProducts->findAll();
 
         if (empty($products)) {
             $products = [];
@@ -57,12 +57,57 @@ class ProductWebController extends Controller
         }
     }
 
-    
+    // public function createProducts(Request $request)
+    // {
+    //     $validate = Validator::make($request->all(), [
+    //         'user_id' => 'required|integer',
+    //         'product_name' => 'required|string',
+    //         'productPrice' => 'required|numeric|min:0',
+    //         'productStock' => 'required|integer|min:0',
+    //         'productImage' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+    //         'productDescription' => 'required|string',
+    //     ]);
+
+    //     if ($validate->fails()) {
+
+    //         return redirect()->route('product.index', ['user_id' => $request->user_id])
+    //             ->with('error', $validate->errors()->first());
+
+    //     }
+    //     $validateProductName = $this->registerProducts->findByProductNameAndUserID($request->product_name, $request->user_id);
+    //     if ($validateProductName) {
+    //         return redirect()->route('product.index', ['user_id' => $request->user_id])
+    //             ->with('error', 'Product name is taken');
+    //     }
+    //     try {
+    //         $productId = $this->generateProductId();
+    //         $imageName = 'default.jpg';
+
+    //         if ($request->hasFile('productImage')) {
+    //             $image = $request->file('productImage');
+    //             $imageName = time().'.'.$image->getClientOriginalExtension();
+    //             $image->move(public_path('images'), $imageName);
+    //         }
+
+    //         $this->registerProducts->create(
+    //             $productId,
+    //             $request->product_name,
+    //             (float) $request->productPrice,
+    //             $imageName,
+    //             (int) $request->productStock,
+    //             $request->productDescription,
+    //             $request->user_id,
+    //         );
+
+    //         return redirect()->route('product.index', ['user_id' => $request->user_id]);
+    //     } catch (\Exception $e) {
+    //         return response()->json(['errors' => ['general' => [$e->getMessage()]]], 500);
+    //     }
+    // }
 
     public function createProducts(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'user_id' => 'required|integer',
             'product_name' => 'required|string',
             'productPrice' => 'required|numeric|min:0',
             'productStock' => 'required|integer|min:0',
@@ -76,21 +121,16 @@ class ProductWebController extends Controller
                 ->with('error', $validate->errors()->first());
 
         }
-        $validateProductName = $this->registerProducts->findByProductNameAndUserID($request->product_name, $request->user_id);
-        if ($validateProductName) {
-            return redirect()->route('product.index', ['user_id' => $request->user_id])
-                ->with('error', 'Product name is taken');
-        }
         try {
             $productId = $this->generateProductId();
             $imageName = 'default.jpg';
-
+    
             if ($request->hasFile('productImage')) {
                 $image = $request->file('productImage');
                 $imageName = time().'.'.$image->getClientOriginalExtension();
                 $image->move(public_path('images'), $imageName);
             }
-
+    
             $this->registerProducts->create(
                 $productId,
                 $request->product_name,
@@ -98,13 +138,14 @@ class ProductWebController extends Controller
                 $imageName,
                 (int) $request->productStock,
                 $request->productDescription,
-                $request->user_id,
+                null,  // No user_id
             );
-
-            return redirect()->route('product.index', ['user_id' => $request->user_id]);
+    
+            return redirect()->route('product.index');
         } catch (\Exception $e) {
             return response()->json(['errors' => ['general' => [$e->getMessage()]]], 500);
         }
+    
     }
 
     public function generateProductId()
@@ -187,39 +228,66 @@ class ProductWebController extends Controller
             return response()->json(['errors' => ['general' => [$e->getMessage()]]], 500);
         }
     }
-    
+
     public function deleteitem($id)
     {
         try {
             $product = ProductModel::where('product_id', $id)->first();
             
             if ($product) {
-                // Store user_id before deletion
+                
                 $userId = $product->userID;
 
-                // Soft delete the product
+            
                 $product->delete();
 
-                // Verify the product was soft deleted
+           
                 if ($product->trashed()) {
-                    \Log::info('Product soft deleted: ', [
-                        'product_id' => $id,
-                        'trashed' => $product->trashed(),
-                        'deleted_at' => $product->deleted_at,
-                    ]);
-
-                    return redirect()->route('product.index', ['user_id' => $userId])
-                        ->with('success', 'Succesfully moved to archive');
+                    return redirect()->route('product.index')
+                        ->with('success', 'Product successfully archived');
                 }
             }
-
-            return redirect()->route('product.index', ['user_id' => auth()->id()])
+    
+            return redirect()->route('product.index')
                 ->with('error', 'Failed to archive product');
         } catch (\Exception $e) {
-            return redirect()->route('product.index', ['user_id' => auth()->id()])
+            return redirect()->route('product.index')
                 ->with('error', 'Error archiving product: '.$e->getMessage());
         }
     }
+    
+    // public function deleteitem($id)
+    // {
+    //     try {
+    //         $product = ProductModel::where('product_id', $id)->first();
+            
+    //         if ($product) {
+    //             // Store user_id before deletion
+    //             $userId = $product->userID;
+
+    //             // Soft delete the product
+    //             $product->delete();
+
+    //             // Verify the product was soft deleted
+    //             if ($product->trashed()) {
+    //                 \Log::info('Product soft deleted: ', [
+    //                     'product_id' => $id,
+    //                     'trashed' => $product->trashed(),
+    //                     'deleted_at' => $product->deleted_at,
+    //                 ]);
+
+    //                 return redirect()->route('product.index', ['user_id' => $userId])
+    //                     ->with('success', 'Succesfully moved to archive');
+    //             }
+    //         }
+
+    //         return redirect()->route('product.index', ['user_id' => auth()->id()])
+    //             ->with('error', 'Failed to archive product');
+    //     } catch (\Exception $e) {
+    //         return redirect()->route('product.index', ['user_id' => auth()->id()])
+    //             ->with('error', 'Error archiving product: '.$e->getMessage());
+    //     }
+    // }
 
     public function checkProductName(Request $request)
     {
