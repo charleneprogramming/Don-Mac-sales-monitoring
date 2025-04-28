@@ -165,17 +165,15 @@ class ProductWebController extends Controller
     public function updateProduct(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'user_id' => 'required|integer',
             'productID' => 'required|string',
             'productName' => [
                 'required',
                 'string',
                 Rule::unique('product', 'product_name')
-                    ->where(function ($query) use ($request) {
-                        return $query->where('userID', $request->user_id)
-                            ->whereNull('deleted_at');
-                    })
-                    ->ignore($request->productID, 'product_id'),
+                ->where(function ($query) {
+                    return $query->whereNull('deleted_at');
+                })
+                ->ignore($request->productID, 'product_id'),
             ],
             'productPrice' => 'required|numeric',
             'productStock' => 'required|numeric',
@@ -219,7 +217,6 @@ class ProductWebController extends Controller
                 $data['image'],
                 (int)$data['productStock'],
                 $data['productDescription'],
-                $data['user_id'],
             );
 
             return redirect()->route('product.index', ['user_id' => $data['user_id']])
@@ -341,17 +338,16 @@ class ProductWebController extends Controller
                     'product_stock' => $product->product_stock,
                     'description' => $product->description,
                     'product_image' => $product->product_image ?? 'default.jpg',
-                    'user_id' => $product->userID,
+                    
                 ];
             })->toArray();
 
-            $userId = auth()->id(); // Get the authenticated user's ID
-
-            return view('Pages.Archive.index', compact('archivedProducts', 'userId'));
+            
+            return view('Pages.Archive.index', compact('archivedProducts'));
         } catch (\Exception $e) {
-            \Log::error('Archive error: '.$e->getMessage());
-
-            return view('Pages.Archive.index', ['archivedProducts' => [], 'userId' => auth()->id()]);
+            \Log::error('Archive error: ' . $e->getMessage());
+    
+            return view('Pages.Archive.index', ['archivedProducts' => []]);
         }
     }
 
@@ -361,7 +357,6 @@ class ProductWebController extends Controller
             $userId = auth()->id();
             $product = ProductModel::onlyTrashed()
                 ->where('product_id', $product_id)
-                ->where('userID', $userId)
                 ->first();
 
             if (! $product) {

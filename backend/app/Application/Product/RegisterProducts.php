@@ -21,7 +21,7 @@ class RegisterProducts
         string $product_image,
         string $product_stock,
         string $description,
-        int $userID,
+        // int $userID,
     ): void {
         // dd($product_price);
         $data = new Product(
@@ -32,7 +32,7 @@ class RegisterProducts
             $product_price,
             $description,
             $product_stock,
-            $userID,
+            // $userID,
         );
         $this->productRepository->create($data);
     }
@@ -44,7 +44,7 @@ class RegisterProducts
         string $product_image,
         int $product_stock,
         string $description,
-        int $userID
+        // int $userID
     ) {
 
         $productModel = $this->productRepository->findByProductID($product_id);
@@ -60,7 +60,7 @@ class RegisterProducts
             $product_price,
             $description,
             $product_stock,
-            $userID,
+            // $userID,
         );
         $this->productRepository->update($data);
     }
