@@ -132,7 +132,7 @@ class ProductWebController extends Controller
             }
     
             $this->registerProducts->create(
-                $productId,git
+                $productId,
                 $request->product_name,
                 (float) $request->productPrice,
                 $imageName,
