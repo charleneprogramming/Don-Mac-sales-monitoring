@@ -7,7 +7,7 @@
 @section('content')
     <div style="padding: 20px; background-color: #ffffff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
         <div style="text-align:start; margin-top: 20px;">
-            <a href="{{ route('product.index', ['user_id' => $userId]) }}" class="back-arrow"
+            <a href="{{ route('product.index') }}" class="back-arrow"
                 style="display: inline-block; padding: 10px 20px;  color: #6b4226; font-weight:bold; font-size:1.5rem;">
                 <i class="fa-solid fa-arrow-left"></i>
             </a>
@@ -20,7 +20,7 @@
 
             @if (count($archivedProducts) > 0)
                 @foreach ($archivedProducts as $product)
-                    @if ($product['user_id'] === $userId)
+                    
                         <div style="background-color: white; padding: 20px; border: 1px solid #9a4c2e; display: flex; flex-direction: column; height: 100%;"
                             onclick="showProductModal({{ json_encode($product) }})">
                             <div
@@ -53,7 +53,7 @@
                                 </button>
                             </form>
                         </div>
-                    @endif
+                    
                 @endforeach
             @else
                 <div style="text-align: center; grid-column: span 4; padding: 20px;">

@@ -28,7 +28,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/products/archive', [ProductWebController::class, 'archive'])->name('product.archive');
     // Route::get('/products/{user_id}/{isAdmin}', [ProductWebController::class, 'index'])->name('product.index');
-    Route::get('/products/{user_id}', [ProductWebController::class, 'index'])->name('product.index');
+    Route::get('/products', [ProductWebController::class, 'index'])->name('product.index');
     Route::post('/products/update', [ProductWebController::class, 'updateProduct'])->name('product.update');
     Route::post('/products/create', [ProductWebController::class, 'createProducts'])->name('product.create');
     Route::post('/deleteitem/{id}', [ProductWebController::class, 'deleteitem'])->name('deleteitem');

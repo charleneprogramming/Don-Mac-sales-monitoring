@@ -19,7 +19,7 @@ class ProductWebController extends Controller
         $this->registerProducts = $registerProducts;
     }
 
-    public function index($user_id)
+    public function index()
     {
         $products = $this->registerProducts->findAll();
 
@@ -132,7 +132,7 @@ class ProductWebController extends Controller
             }
     
             $this->registerProducts->create(
-                $productId,
+                $productId,git
                 $request->product_name,
                 (float) $request->productPrice,
                 $imageName,
@@ -141,7 +141,7 @@ class ProductWebController extends Controller
                 null,  // No user_id
             );
     
-            return redirect()->route('product.index');
+            return redirect()->route('product.index')->with('success', 'Beverage successfully created');
         } catch (\Exception $e) {
             return response()->json(['errors' => ['general' => [$e->getMessage()]]], 500);
         }
@@ -232,9 +232,6 @@ class ProductWebController extends Controller
             $product = ProductModel::where('product_id', $id)->first();
             
             if ($product) {
-                
-                $userId = $product->userID;
-
             
                 $product->delete();
 
