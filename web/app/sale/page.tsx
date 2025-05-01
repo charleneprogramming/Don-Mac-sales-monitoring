@@ -93,24 +93,22 @@ export default function Sales(): JSX.Element {
                         {/* Add To Cart (Right Side) */}
                         <div className="flex-1 rounded-lg shadow-lg p-6">
                             <div className="justify-between flex">
-                            <h2 className="text-2xl font-bold text-[#4b3025] mb-4">Your Cart</h2>
-                            <div className="flex items-center space-x-4">
-                            <span className="text-[#4b3025] font-semibold">
-                                {enabled ? 'For Delivery' : 'For Pickup'}
-                            </span>
-                            <button
-                                onClick={() => setEnabled(!enabled)}
-                                className={`w-12 h-6 flex items-center rounded-full p-1 transition duration-300 ${
-                                enabled ? 'bg-yellow-400' : 'bg-gray-300'
-                                }`}
-                            >
-                                <div
-                                className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-300 ${
-                                    enabled ? 'translate-x-6' : 'translate-x-0'
-                                }`}
-                                ></div>
-                            </button>
-                            </div>
+                                <h2 className="text-2xl font-bold text-[#4b3025] mb-4">Your Cart</h2>
+                                <div className="flex items-center space-x-4">
+                                    <span className="text-[#4b3025] font-semibold">
+                                        {enabled ? 'For Delivery' : 'For Pickup'}
+                                    </span>
+                                    <button
+                                        onClick={() => setEnabled(!enabled)}
+                                        className={`w-12 h-6 flex items-center rounded-full p-1 transition duration-300 ${enabled ? 'bg-yellow-400' : 'bg-gray-300'
+                                            }`}
+                                    >
+                                        <div
+                                            className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-300 ${enabled ? 'translate-x-6' : 'translate-x-0'
+                                                }`}
+                                        ></div>
+                                    </button>
+                                </div>
                             </div>
                             <div className="overflow-x-auto">
                                 <table className="w-full mb-4">

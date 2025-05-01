@@ -17,22 +17,17 @@ export const useSales = () => {
     const [showReceipt, setShowReceipt] = useState(false);
     const [currentTransaction, setCurrentTransaction] = useState<any>(null);
 
-
     const fetchProducts = async () => {
         try {
-            
             const token = localStorage.getItem('token');
-            const userId = localStorage.getItem('userId');
 
-            if (!token || !userId) {
+            if (!token) {
                 setError('Authentication required');
                 setLoading(false);
                 return;
             }
 
-            console.log(`Fetching products for userId: ${userId} with token: ${token}`);
-
-            const response = await fetch(`http://localhost:8000/api/products/${userId}`, {
+            const response = await fetch('http://localhost:8000/api/products', {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
@@ -45,9 +40,7 @@ export const useSales = () => {
             }
 
             const data = await response.json();
-            console.log('API Response:', data);
-
-            setProducts(data);
+            setProducts(data.data);
             setError(null);
         } catch (err) {
             console.error('Error details:', err);
@@ -59,8 +52,8 @@ export const useSales = () => {
 
     const addToCart = (product: Product) => {
         const existingItem = cart.find(item => item.product_id === product.product_id);
-
         const currentQuantity = existingItem ? existingItem.quantity : 0;
+
         if (currentQuantity + 1 > product.product_stock) {
             alert('Not enough stock available!');
             return;
@@ -122,7 +115,7 @@ export const useSales = () => {
             });
             setShowReceipt(true);
             setCart([]);
-            await fetchProducts(); // Refresh products to update stock
+            await fetchProducts(); // Refresh product stock after sale
         } catch (err) {
             console.error('Checkout error:', err);
             setError(err instanceof Error ? err.message : 'An error occurred during checkout');
@@ -131,10 +124,14 @@ export const useSales = () => {
 
     useEffect(() => {
         fetchProducts();
+        const interval = setInterval(() => {
+            fetchProducts(); // Poll every 15 seconds to update stock
+        }, 15000);
+        return () => clearInterval(interval);
     }, []);
 
     return {
-        products: products || [],
+        products,
         cart,
         setCart,
         loading,

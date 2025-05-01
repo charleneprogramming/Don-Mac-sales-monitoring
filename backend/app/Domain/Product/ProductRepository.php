@@ -14,11 +14,13 @@ interface ProductRepository
 
     public function findById(int $id): ?Product;
 
+    public function getAllProducts(): array;
+
     public function findByProductID(string $product_id): ?Product;
 
-    public function findByUserID(int $userID): array;
+    // public function findByUserID(int $userID): array;
 
-    public function findByProductNameAndUserID(string $product_name, int $userID): ?Product;
+    // public function findByProductNameAndUserID(string $product_name, int $userID): ?Product;
 
     // public function create(array $data): void;
 

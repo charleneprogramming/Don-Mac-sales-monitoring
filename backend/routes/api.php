@@ -18,7 +18,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user', [AuthAPIController::class, 'user']);
 
     // Product routes
-    Route::get('/products', [ProductController::class, 'findAll']);
+    Route::get('/products', [ProductAPIController::class, 'index']);
+    Route::get('/debug-products', [ProductAPIController::class, 'getAllProducts']);
     // Route::get('/products/{user_id}', [ProductAPIController::class, 'findByUserID']);
     Route::post('/add/products', [ProductAPIController::class, 'createProducts']);
     Route::post('/update/products', [ProductAPIController::class, 'updateProduct']);

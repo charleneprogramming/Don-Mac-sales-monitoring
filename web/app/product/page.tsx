@@ -1,62 +1,40 @@
 "use client";
 
-import { useProductsByUser } from '../Hooks/useProductsByUser/useProductsByUser';
+import { useProducts } from '../Hooks/useProducts/useProducts';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 export default function ProductPage() {
     const router = useRouter();
-    const [userId, setUserId] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [authError, setAuthError] = useState<string | null>(null);
 
     useEffect(() => {
-        let mounted = true;
-
         const checkAuth = () => {
             try {
                 const token = localStorage.getItem('token');
-                const storedUserId = localStorage.getItem('userId');
-
-                console.log('Auth check:', { hasToken: !!token, userId: storedUserId });
-
-                if (!token || !storedUserId) {
-                    console.log('Missing auth data');
+                if (!token) {
                     setAuthError('Please log in to view products');
                     return;
                 }
-
-                if (mounted) {
-                    setUserId(storedUserId);
-                    setAuthError(null);
-                }
+                setAuthError(null);
             } catch (error) {
-                console.error('Auth check failed:', error);
+                console.error('Authentication check failed:', error);
                 setAuthError('Failed to check authentication');
             } finally {
-                if (mounted) {
-                    setIsLoading(false);
-                }
+                setIsLoading(false);
             }
         };
-
-        // Wait for next tick to ensure client-side execution
-        Promise.resolve().then(checkAuth);
-
-        return () => {
-            mounted = false;
-        };
+        checkAuth();
     }, []);
 
-    const { products, loading: productsLoading, error: productsError } = useProductsByUser(userId || '');
+    const { products, loading: productsLoading, error: productsError } = useProducts(); // updated hook
 
-    // Show loading state while checking auth
     if (isLoading) {
         return <div className="flex justify-center items-center h-screen">Checking authentication...</div>;
     }
 
-    // Show auth error if any
     if (authError) {
         return (
             <div className="flex justify-center items-center h-screen flex-col gap-4">
@@ -71,12 +49,10 @@ export default function ProductPage() {
         );
     }
 
-    // Show loading state while fetching products
     if (productsLoading) {
         return <div className="flex justify-center items-center h-screen">Loading products...</div>;
     }
 
-    // Show products error if any
     if (productsError) {
         return (
             <div className="flex justify-center items-center h-screen flex-col gap-4">

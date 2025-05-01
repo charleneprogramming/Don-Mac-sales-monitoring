@@ -75,19 +75,24 @@ class RegisterProducts
         return $this->productRepository->findAll();
     }
 
+    public function getAllProducts(): array
+    {
+        return $this->productRepository->getAllProducts();
+    }
+
     public function delete(string $product_id)
     {
         return $this->productRepository->delete($product_id);
     }
 
-    public function findByUserID(int $userID): array
-    {
-        return $this->productRepository->findByUserID($userID);
-    }
-    public function findByProductNameAndUserID(string $product_name, int $userID): ?Product
-    {
-        return $this->productRepository->findByProductNameAndUserID($product_name, $userID);
-    }
+    // public function findByUserID(int $userID): array
+    // {
+    //     return $this->productRepository->findByUserID($userID);
+    // }
+    // public function findByProductNameAndUserID(string $product_name, int $userID): ?Product
+    // {
+    //     return $this->productRepository->findByProductNameAndUserID($product_name, $userID);
+    // }
 }
 
 //     public function execute($data)

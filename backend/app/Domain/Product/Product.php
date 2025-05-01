@@ -21,7 +21,7 @@ class Product
 
     private ?int $product_stock;
 
-    private ?int $userID;
+    // private ?int $userID;
 
     public function __construct(
         ?int $id = null,
@@ -51,8 +51,8 @@ class Product
             'product_image' => $this->product_image,
             'product_name' => $this->product_name,
             'product_price' => $this->product_price,
-            'description' => $this->description,
             'product_stock' => $this->product_stock,
+            'description' => $this->description,
             // 'userID' => $this->userID,
         ];
     }
@@ -92,8 +92,8 @@ class Product
         return $this->description;
     }
 
-    public function getUserID()
-    {
-        return $this->userID;
-    }
+    // public function getUserID()
+    // {
+    //     return $this->userID;
+    // }
 }

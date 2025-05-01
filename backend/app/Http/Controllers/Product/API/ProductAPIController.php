@@ -17,15 +17,16 @@ class ProductAPIController extends Controller
     {
         $this->registerProducts = $registerProducts;
     }
-
-    public function findAll()
+    
+    public function findAll(): JsonResponse
     {
         try {
             $productModels = $this->registerProducts->findAll();
+    
             if (empty($productModels)) {
-                return response()->json(['products' => []], 200);
+                return response()->json([], 200);
             }
-
+    
             $products = array_map(function ($product) {
                 return [
                     'product_id' => $product->getProduct_id(),
@@ -34,11 +35,10 @@ class ProductAPIController extends Controller
                     'product_stock' => $product->getProduct_stock(),
                     'description' => $product->getDescription(),
                     'product_image' => $product->getProduct_image() ?? 'default.jpg',
-                    'userID' => $product->getUserID(),
                 ];
             }, $productModels);
-
-            return response()->json(['products' => $products], 200);
+    
+            return response()->json($products, 200);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error fetching products',
@@ -56,7 +56,7 @@ class ProductAPIController extends Controller
             'productStock' => 'required|numeric',
             'productImage' => 'nullable',
             'productDescription' => 'required|string',
-            'userID' => 'required|numeric',
+            // 'userID' => 'required|numeric',
         ]);
         if ($validate->fails()) {
             return response()->json($validate->errors(), 422);
@@ -80,7 +80,7 @@ class ProductAPIController extends Controller
             'default.jpg',
             $data['productStock'],
             $data['productDescription'],
-            $data['userID'],
+            // $data['userID'],
         );
 
         return response()->json(['message' => 'test']);
@@ -130,6 +130,7 @@ class ProductAPIController extends Controller
             ], 500);
         }
     }
+    
 
     public function index()
     {
@@ -166,26 +167,27 @@ class ProductAPIController extends Controller
 
     
 
-    public function findByUserID($user_id): JsonResponse
-    {
-        $products = $this->registerProducts->findByUserID((int) $user_id);
+    // public function findByUserID($user_id): JsonResponse
+    // {
+    //     $products = $this->registerProducts->findByUserID((int) $user_id);
         
-        if (empty($products)) {
-            $products = [];
-        } else {
-            $products = array_map(function ($product) {
-                return [
-                    'product_id' => $product->getProduct_id(),
-                    'product_name' => $product->getProduct_name(),
-                    'product_price' => $product->getProduct_price(),
-                    'product_stock' => $product->getProduct_stock(),
-                    'description' => $product->getDescription(),
-                    'product_image' => $product->getProduct_image() ?? 'default.jpg',
-                ];
-            }, $products);
-        }
+    //     if (empty($products)) {
+    //         $products = [];
+    //     } else {
+    //         $products = array_map(function ($product) {
+    //             return [
+    //                 'product_id' => $product->getProduct_id(),
+    //                 'product_name' => $product->getProduct_name(),
+    //                 'product_price' => $product->getProduct_price(),
+    //                 'product_stock' => $product->getProduct_stock(),
+    //                 'description' => $product->getDescription(),
+    //                 'product_image' => $product->getProduct_image() ?? 'default.jpg',
+    //             ];
+    //         }, $products);
+    //     }
 
-        return response()->json($products);
+    //     return response()->json($products);
+    // }
         //     try {
         //         // Get the authenticated user from the request
         //         $authenticatedUser = request()->user;
@@ -222,5 +224,5 @@ class ProductAPIController extends Controller
         //             'error' => $e->getMessage(),
         //         ], 500);
         //     }
-    }
+    
 }

@@ -9,9 +9,7 @@ class EloquentProductRepository implements ProductRepository
 {
     public function findAll(): array
     {
-        $products = ProductModel::whereNull('deleted_at')->get();
-
-        return $products->map(function ($productModel) {
+        return ProductModel::all()->map(function ($productModel) {
             return new Product(
                 $productModel->id,
                 $productModel->product_id,
@@ -19,11 +17,26 @@ class EloquentProductRepository implements ProductRepository
                 $productModel->product_name,
                 (float) $productModel->product_price,
                 $productModel->description,
-                (int) $productModel->product_stock,
-                // (int) $productModel->user_id
+                (int) $productModel->product_stock
             );
-        })->all();
+        })->toArray();
     }
+    
+
+    public function getAllProducts(): array
+{
+    return ProductModel::all()->map(function ($productModel) {
+        return [
+            'id' => $productModel->id,
+            'product_id' => $productModel->product_id,
+            'product_image' => $productModel->product_image,
+            'product_name' => $productModel->product_name,
+            'product_price' => (float) $productModel->product_price,
+            'product_stock' => (int) $productModel->product_stock,
+            'description' => $productModel->description,
+        ];
+    })->toArray();
+}
 
     public function create(Product $product): void
     {

@@ -25,7 +25,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/dashboard', [DashboardWEBController::class, 'index'])->name('dashboard');
 
     // Products
-
     Route::get('/products/archive', [ProductWebController::class, 'archive'])->name('product.archive');
     // Route::get('/products/{user_id}/{isAdmin}', [ProductWebController::class, 'index'])->name('product.index');
     Route::get('/products', [ProductWebController::class, 'index'])->name('product.index');
