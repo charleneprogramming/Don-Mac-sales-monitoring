@@ -17,16 +17,16 @@ class ProductAPIController extends Controller
     {
         $this->registerProducts = $registerProducts;
     }
-    
+
     public function findAll(): JsonResponse
     {
         try {
             $productModels = $this->registerProducts->findAll();
-    
+
             if (empty($productModels)) {
                 return response()->json([], 200);
             }
-    
+
             $products = array_map(function ($product) {
                 return [
                     'product_id' => $product->getProduct_id(),
@@ -37,7 +37,7 @@ class ProductAPIController extends Controller
                     'product_image' => $product->getProduct_image() ?? 'default.jpg',
                 ];
             }, $productModels);
-    
+
             return response()->json($products, 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -130,18 +130,28 @@ class ProductAPIController extends Controller
             ], 500);
         }
     }
-    
+
 
     public function index()
     {
         try {
             $products = DB::table('product')
                 ->whereNull('deleted_at')
-                ->get();
+                ->get()
+                ->map(function ($product) {
+                    return [
+                        'product_id' => $product->product_id,
+                        'product_name' => $product->product_name,
+                        'product_price' => (float) $product->product_price,
+                        'product_stock' => (int) $product->product_stock,
+                        'description' => $product->description,
+                        'product_image' => $product->product_image ?? 'default.jpg',
+                    ];
+                });
 
             return response()->json([
+                'data' => $products,
                 'success' => true,
-                'products' => $products,
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -165,12 +175,12 @@ class ProductAPIController extends Controller
     //     }
     // }
 
-    
+
 
     // public function findByUserID($user_id): JsonResponse
     // {
     //     $products = $this->registerProducts->findByUserID((int) $user_id);
-        
+
     //     if (empty($products)) {
     //         $products = [];
     //     } else {
@@ -224,5 +234,5 @@ class ProductAPIController extends Controller
         //             'error' => $e->getMessage(),
         //         ], 500);
         //     }
-    
+
 }

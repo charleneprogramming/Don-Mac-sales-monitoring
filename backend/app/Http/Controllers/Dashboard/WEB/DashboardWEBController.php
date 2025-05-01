@@ -4,22 +4,74 @@ namespace App\Http\Controllers\Dashboard\WEB;
 
 use App\Http\Controllers\Controller;
 use App\Infrastructure\Persistence\Eloquent\Sales\SalesModel;
+use App\Infrastructure\Persistence\Eloquent\User\UserModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class DashboardWEBController extends Controller
 {
     public function index()
     {
-        return view('Pages.Dashboard.index');
-        // $products = DB::table('product')
-        //     ->where('userID', Auth::id())
-        //     ->whereNull('deleted_at')
-        //     ->select('product_id', 'product_name', 'product_price', 'product_stock', 'product_image', 'description')
-        //     ->get();
+        // Get all users
+        $users = UserModel::all();
+        $totalUsers = $users->count();
 
-        // return view('Pages.Sales.index', ['products' => $products]);
+        // Get today's date range
+        $todayStart = Carbon::today()->startOfDay();
+        $todayEnd = Carbon::today()->endOfDay();
+
+        // Get all sales with their details
+        $transactions = SalesModel::with(['user', 'salesDetails.product'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Calculate basic statistics
+        $totalTransactions = $transactions->count();
+        $completedTransactions = $transactions->where('status', true);
+        $completedCount = $completedTransactions->count();
+        $cancelledCount = $transactions->where('status', false)->count();
+
+        // Calculate total revenue (only from completed transactions)
+        $totalSold = $completedTransactions->sum('total_order');
+
+        // Calculate delivery statistics
+        $deliveryCount = $completedTransactions->where('delivery_method', true)->count();
+        $pickupCount = $completedTransactions->where('delivery_method', false)->count();
+
+        // Calculate merchant fee total (delivery fees)
+        $merchantFeeTotal = $completedTransactions->where('delivery_method', true)
+            ->count() * 25.00; // 25.00 is the fixed delivery fee
+
+        // Get today's statistics
+        $todayTransactions = $completedTransactions->filter(function($transaction) use ($todayStart) {
+            return Carbon::parse($transaction->created_at)->isToday();
+        });
+        $todayRevenue = $todayTransactions->sum('total_order');
+        $todayCount = $todayTransactions->count();
+
+        // Get this week's statistics
+        $thisWeekTransactions = $completedTransactions->filter(function($transaction) {
+            return Carbon::parse($transaction->created_at)->isCurrentWeek();
+        });
+        $weeklyRevenue = $thisWeekTransactions->sum('total_order');
+        $weeklyCount = $thisWeekTransactions->count();
+
+        return view('Pages.Dashboard.index', compact(
+            'totalSold',
+            'totalTransactions',
+            'totalUsers',
+            'completedCount',
+            'cancelledCount',
+            'deliveryCount',
+            'pickupCount',
+            'merchantFeeTotal',
+            'todayRevenue',
+            'todayCount',
+            'weeklyRevenue',
+            'weeklyCount'
+        ));
     }
 
     // public function updateStock(Request $request)

@@ -32,10 +32,10 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link d-flex align-items-center gap-3 text-white " href="/transaction/{{ Auth::id() }}">
+                <a class="nav-link d-flex align-items-center gap-3 text-white " href="/transactions">
                     <i class="fa-solid fa-file-invoice-dollar"></i>
                     <span>Transactions</span>
-                </a>
+                </a>   
             </li>
 
             <li class="nav-item">

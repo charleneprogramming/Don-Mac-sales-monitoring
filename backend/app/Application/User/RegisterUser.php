@@ -14,7 +14,7 @@ class RegisterUser
         $this->userRepository = $userRepository;
     }
 
-    public function create(string $userName, string $password, ?string $name, ?string $contactNumber, $isAdmin)
+    public function create(string $userName, string $password, ?string $name, ?string $contactNumber)
     {
         $validate = $this->userRepository->findByUsername($userName);
         if ($validate) {
@@ -25,8 +25,7 @@ class RegisterUser
             $userName,
             $password,
             $name,
-            $contactNumber,
-            $isAdmin
+            $contactNumber
         );
         $this->userRepository->create($data);
     }

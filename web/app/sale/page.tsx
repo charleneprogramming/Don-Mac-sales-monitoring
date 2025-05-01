@@ -4,7 +4,8 @@ import { useRouter } from 'next/navigation';
 import { useSales } from '../Hooks/useSales/useSales';
 import Navbar from '../../components/Navbar';
 import Image from 'next/image';
-import { Receipt } from '../../components/receipt';
+import TransactionModal from '../../components/TransactionModal';
+
 export default function Sales(): JSX.Element {
     const { products, cart, loading, error, addToCart, setCart, handleCheckout, showReceipt, setShowReceipt, currentTransaction } = useSales();
 
@@ -12,6 +13,12 @@ export default function Sales(): JSX.Element {
 
     const calculateSubtotal = () => {
         return cart.reduce((total, item) => total + (item.product_price * item.quantity), 0);
+    };
+
+    const calculateTotal = () => {
+        const subtotal = calculateSubtotal();
+        const merchantFee = enabled ? 25.00 : 0.00; // 25 pesos for delivery, 0 for pickup
+        return subtotal + merchantFee;
     };
 
     const updateQuantity = (productId: string, newQuantity: number) => {
@@ -146,10 +153,20 @@ export default function Sales(): JSX.Element {
                                     </tbody>
                                 </table>
                                 <div className="text-right">
-                                    <p className="text-lg font-bold text-[#4b3025]">Subtotal: ₱{calculateSubtotal().toFixed(2)}</p>
+                                    <p className="text-lg font-semibold text-[#4b3025] mb-2">Subtotal: ₱{calculateSubtotal().toFixed(2)}</p>
+                                    <p className="text-md text-[#4b3025] mb-2">
+                                        Merchant Fee: ₱{(enabled ? 25.00 : 0.00).toFixed(2)}
+                                        <span className="text-sm text-gray-500 ml-2">
+                                            ({enabled ? 'Delivery charge' : 'No charge for pickup'})
+                                        </span>
+                                    </p>
+                                    <p className="text-xl font-bold text-[#4b3025] mb-4">
+                                        Total: ₱{calculateTotal().toFixed(2)}
+                                    </p>
                                     <button
-                                        onClick={handleCheckout}
+                                        onClick={() => handleCheckout(enabled)}
                                         className="mt-4 bg-[#6b4226] text-white px-4 py-2 rounded hover:bg-[#4b3025] transition-colors"
+                                        disabled={cart.length === 0}
                                     >
                                         Checkout
                                     </button>
@@ -160,10 +177,10 @@ export default function Sales(): JSX.Element {
                 </div>
             )}
             {showReceipt && currentTransaction && (
-                <Receipt
-                    transaction={currentTransaction}
+                <TransactionModal
+                    isOpen={showReceipt}
                     onClose={() => setShowReceipt(false)}
-                    onPrint={() => window.print()}
+                    transaction={currentTransaction}
                 />
             )}
         </div>

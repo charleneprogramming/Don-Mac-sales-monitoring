@@ -70,7 +70,7 @@ export const useSales = () => {
         }
     };
 
-    const handleCheckout = async () => {
+    const handleCheckout = async (isDelivery: boolean) => {
         try {
             const token = localStorage.getItem('token');
             const userId = localStorage.getItem('userId');
@@ -80,6 +80,10 @@ export const useSales = () => {
                 return;
             }
 
+            const subtotal = cart.reduce((total, item) => total + (item.product_price * item.quantity), 0);
+            const merchantFee = isDelivery ? 25.00 : 0.00;
+            const totalOrder = subtotal + merchantFee;
+
             const orderData = {
                 user_id: userId,
                 order_list: cart.map(item => ({
@@ -88,8 +92,10 @@ export const useSales = () => {
                     quantity: item.quantity,
                     price: item.product_price
                 })),
-                total_order: cart.reduce((total, item) => total + (item.product_price * item.quantity), 0),
-                quantity: cart.reduce((total, item) => total + item.quantity, 0)
+                total_order: totalOrder,
+                quantity: cart.reduce((total, item) => total + item.quantity, 0),
+                delivery_method: isDelivery,
+                merchant_fee: merchantFee
             };
 
             const response = await fetch('http://localhost:8000/api/createSales', {
@@ -109,9 +115,12 @@ export const useSales = () => {
             const data = await response.json();
             setCurrentTransaction({
                 ...orderData,
+                id: data.id,
                 date: new Date().toLocaleString(),
                 message: "Thank you for choosing Don Macchiatos!",
-                footer: "Please come again"
+                footer: "Please come again",
+                delivery_method: isDelivery ? 'For Delivery' : 'For Pick Up',
+                merchant_fee: merchantFee
             });
             setShowReceipt(true);
             setCart([]);

@@ -26,7 +26,6 @@ Route::group(['middleware' => 'auth'], function () {
 
     // Products
     Route::get('/products/archive', [ProductWebController::class, 'archive'])->name('product.archive');
-    // Route::get('/products/{user_id}/{isAdmin}', [ProductWebController::class, 'index'])->name('product.index');
     Route::get('/products', [ProductWebController::class, 'index'])->name('product.index');
     Route::post('/products/update', [ProductWebController::class, 'updateProduct'])->name('product.update');
     Route::post('/products/create', [ProductWebController::class, 'createProducts'])->name('product.create');
@@ -46,10 +45,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/update-stock', [SalesWEBController::class, 'updateStock'])->name('sales.updateStock');
 
     // Transactions
-    Route::get('/transactions/{userId}', [TransactionWEBController::class, 'getUserTransactions']);
-    Route::get('/transaction-details/{transactionId}', [TransactionWEBController::class, 'getTransactionDetails']);
-    Route::get('/transactions-summary', [TransactionWEBController::class, 'getTransactionSummary']);
-    Route::get('/transaction/{user_id}', [TransactionWEBController::class, 'index']);
+    Route::prefix('transactions')->group(function () {
+        Route::get('/', [TransactionWEBController::class, 'index'])->name('transactions.index');
+        Route::get('/details/{transactionId}', [TransactionWEBController::class, 'getTransactionDetails'])->name('transactions.details');
+        Route::get('/{userId}', [TransactionWEBController::class, 'getUserTransactions'])->name('transactions.user');
+    });
 
     // Logout
     Route::get('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
@@ -65,3 +65,7 @@ Route::post('/check-product-image', [ProductWebController::class, 'checkProductI
 //     Route::get('/transaction/{user_id}', [TransactionWEBController::class, 'index'])->name('transaction.index');
 //     Route::get('/users', [UserWEBController::class, 'index'])->name('users.index');
 // });
+
+Route::get('/transactions/details/{transactionId}', [TransactionWEBController::class, 'getTransactionDetails']);
+Route::post('/transactions/update-status/{transactionId}', [TransactionWEBController::class, 'updateTransactionStatus']);
+Route::get('/transactions/{userId}', [TransactionWEBController::class, 'getUserTransactions']);

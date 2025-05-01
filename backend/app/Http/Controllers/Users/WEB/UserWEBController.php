@@ -30,23 +30,15 @@ class UserWEBController extends Controller
             'username' => 'required|string|unique:users,username',
             'password' => 'required|string|min:6',
             'name' => 'required|string|max:255',
-            'contact_number' => 'nullable|string|max:20', 
-            'user_type' => 'required|string',
+            'contact_number' => 'nullable|string|max:20'
         ]);
-
-        if ($request->user_type == '1') {
-            $isAdmin = true;
-        } else {
-            $isAdmin = false;
-        }
 
         try {
             $this->registerUser->create(
                 $validated['username'],
                 Hash::make($validated['password']),
-                $isAdmin,
                 $validated['name'],
-                $validated['contact_number'],
+                $validated['contact_number']
             );
 
             return redirect()->back()->with('success', 'User created successfully');

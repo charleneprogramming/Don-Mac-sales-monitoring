@@ -24,9 +24,31 @@
                         <div class="stat-details">
                             <h6>Today's Sales</h6>
                             <h3>₱{{ number_format($dailySales->sum('total_sales'), 2) }}</h3>
-                            <p class="trend">
-                                <i class="fas fa-arrow-up text-success"></i>
-                                <span>vs. yesterday</span>
+                            <div class="stat-meta">
+                                <span class="badge bg-light text-dark me-2">
+                                    <i class="fas fa-shopping-bag"></i> {{ $dailySales->sum('transaction_count') ?? 0 }}
+                                    orders
+                                </span>
+                            </div>
+                            <div class="delivery-stats mt-2">
+                                <small class="text-muted">
+                                    <i class="fas fa-motorcycle"></i> {{ $dailySales->sum('delivery_count') ?? 0 }}
+                                    deliveries
+                                    <i class="fas fa-store ms-2"></i> {{ $dailySales->sum('pickup_count') ?? 0 }} pickups
+                                </small>
+                            </div>
+                            <p class="trend mt-2">
+                                @if ($dailyTrend > 0)
+                                    <i class="fas fa-arrow-up text-success"></i>
+                                    <span class="text-success">+{{ number_format($dailyTrend, 1) }}%</span>
+                                @elseif($dailyTrend < 0)
+                                    <i class="fas fa-arrow-down text-danger"></i>
+                                    <span class="text-danger">{{ number_format($dailyTrend, 1) }}%</span>
+                                @else
+                                    <i class="fas fa-equals text-warning"></i>
+                                    <span class="text-warning">0%</span>
+                                @endif
+                                <span class="ms-1">vs. yesterday</span>
                             </p>
                         </div>
                     </div>
@@ -41,10 +63,19 @@
                         <div class="stat-details">
                             <h6>Weekly Sales</h6>
                             <h3>₱{{ number_format($weeklySales->sum('total_sales'), 2) }}</h3>
-                            <p class="trend">
-                                <i class="fas fa-arrow-up text-success"></i>
-                                <span>vs. last week</span>
-                            </p>
+                            <div class="stat-meta">
+                                <span class="badge bg-light text-dark me-2">
+                                    <i class="fas fa-shopping-bag"></i> {{ $weeklySales->sum('transaction_count') ?? 0 }}
+                                    orders
+                                </span>
+                            </div>
+                            <div class="delivery-stats mt-2">
+                                <small class="text-muted">
+                                    <i class="fas fa-motorcycle"></i> {{ $weeklySales->sum('delivery_count') ?? 0 }}
+                                    deliveries
+                                    <i class="fas fa-store ms-2"></i> {{ $weeklySales->sum('pickup_count') ?? 0 }} pickups
+                                </small>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -58,10 +89,19 @@
                         <div class="stat-details">
                             <h6>Monthly Sales</h6>
                             <h3>₱{{ number_format($monthlySales->sum('total_sales'), 2) }}</h3>
-                            <p class="trend">
-                                <i class="fas fa-arrow-up text-success"></i>
-                                <span>vs. last month</span>
-                            </p>
+                            <div class="stat-meta">
+                                <span class="badge bg-light text-dark me-2">
+                                    <i class="fas fa-shopping-bag"></i> {{ $monthlySales->sum('transaction_count') ?? 0 }}
+                                    orders
+                                </span>
+                            </div>
+                            <div class="delivery-stats mt-2">
+                                <small class="text-muted">
+                                    <i class="fas fa-motorcycle"></i> {{ $monthlySales->sum('delivery_count') ?? 0 }}
+                                    deliveries
+                                    <i class="fas fa-store ms-2"></i> {{ $monthlySales->sum('pickup_count') ?? 0 }} pickups
+                                </small>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -75,11 +115,19 @@
                         <div class="stat-details">
                             <h6>Yearly Sales</h6>
                             <h3>₱{{ number_format($yearlySales->sum('total_sales'), 2) }}</h3>
-
-                            <p class="trend">
-                                <i class="fas fa-arrow-up text-success"></i>
-                                <span>vs. last year</span>
-                            </p>
+                            <div class="stat-meta">
+                                <span class="badge bg-light text-dark me-2">
+                                    <i class="fas fa-shopping-bag"></i> {{ $yearlySales->sum('transaction_count') ?? 0 }}
+                                    orders
+                                </span>
+                            </div>
+                            <div class="delivery-stats mt-2">
+                                <small class="text-muted">
+                                    <i class="fas fa-motorcycle"></i> {{ $yearlySales->sum('delivery_count') ?? 0 }}
+                                    deliveries
+                                    <i class="fas fa-store ms-2"></i> {{ $yearlySales->sum('pickup_count') ?? 0 }} pickups
+                                </small>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -92,8 +140,6 @@
                 <div class="chart-card">
                     <div class="chart-card-header">
                         <h5><i class="fas fa-chart-line me-2"></i>Daily Sales Trend</h5>
-                        <div class="chart-actions">
-                        </div>
                     </div>
                     <div class="chart-body">
                         <canvas id="dailyChart"></canvas>
@@ -104,8 +150,6 @@
                 <div class="chart-card">
                     <div class="chart-card-header">
                         <h5><i class="fas fa-chart-line me-2"></i>Weekly Sales Trend</h5>
-                        <div class="chart-actions">
-                        </div>
                     </div>
                     <div class="chart-body">
                         <canvas id="weeklyChart"></canvas>
@@ -119,8 +163,6 @@
                 <div class="chart-card">
                     <div class="chart-card-header">
                         <h5><i class="fas fa-chart-line me-2"></i>Monthly Sales Trend</h5>
-                        <div class="chart-actions">
-                        </div>
                     </div>
                     <div class="chart-body">
                         <canvas id="monthlyChart"></canvas>
@@ -131,8 +173,6 @@
                 <div class="chart-card">
                     <div class="chart-card-header">
                         <h5><i class="fas fa-chart-line me-2"></i>Yearly Sales Trend</h5>
-                        <div class="chart-actions">
-                        </div>
                     </div>
                     <div class="chart-body">
                         <canvas id="yearlyChart"></canvas>
@@ -166,6 +206,7 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: {
                             position: 'top',
@@ -275,7 +316,7 @@
         .stat-card-content {
             padding: 1.5rem;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
         }
 
         .stat-icon {
@@ -287,6 +328,7 @@
             align-items: center;
             justify-content: center;
             margin-right: 1rem;
+            flex-shrink: 0;
         }
 
         .stat-icon i {
@@ -312,9 +354,27 @@
             margin-bottom: 0.5rem;
         }
 
-        .trend {
+        .stat-meta {
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-meta .badge {
+            font-weight: 500;
+            padding: 0.5em 0.75em;
+        }
+
+        .delivery-stats {
             font-size: 0.75rem;
             color: #666;
+        }
+
+        .delivery-stats i {
+            color: #6b4226;
+            margin-right: 0.25rem;
+        }
+
+        .trend {
+            font-size: 0.75rem;
             margin: 0;
         }
 
@@ -348,73 +408,9 @@
             margin: 0;
         }
 
-        .chart-actions .btn {
-            padding: 0.375rem 0.75rem;
-            border-color: #6b4226;
-            color: #6b4226;
-            transition: all 0.3s ease;
-        }
-
-        .chart-actions .btn:hover {
-            background-color: #6b4226;
-            color: white;
-        }
-
         .chart-body {
             position: relative;
             height: 300px;
-        }
-
-        @media (max-width: 768px) {
-            .stat-card {
-                margin-bottom: 1rem;
-            }
-        }
-
-        .container-fluid {
-            min-height: calc(100vh - 56px);
-        }
-
-        .text-muted {
-            color: #6b4226 !important;
-            opacity: 0.7;
-        }
-
-        @media (max-width: 576px) {
-            .container-fluid {
-                padding: 1rem;
-            }
-
-            .stat-card-content {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .stat-icon {
-                margin: 0 auto 1rem auto;
-            }
-        }
-
-        .container-fluid {
-            padding: 2rem !important;
-        }
-
-        .text-muted {
-            color: #6b4226 !important;
-            opacity: 0.7;
-        }
-
-        .stat-card {
-            height: 100%;
-            margin-bottom: 0 !important;
-        }
-
-        .chart-card {
-            margin-bottom: 0 !important;
-        }
-
-        .trend i {
-            margin-right: 0.25rem;
         }
 
         @media (max-width: 768px) {

@@ -4,151 +4,140 @@ namespace App\Http\Controllers\Transaction\WEB;
 
 use App\Http\Controllers\Controller;
 use App\Infrastructure\Persistence\Eloquent\Sales\SalesModel;
+use App\Infrastructure\Persistence\Eloquent\User\UserModel;
+use Illuminate\Support\Facades\DB;
 
 class TransactionWEBController extends Controller
 {
+    public function index()
+    {
+        // Get all users
+        $users = UserModel::all();
+        $totalUsers = $users->count();
 
+        // Get all sales with their details
+        $transactions = SalesModel::with(['user', 'salesDetails.product'])
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($sale) {
+                return (object) [
+                    'id' => $sale->id,
+                    'name' => $sale->user->name,
+                    'username' => $sale->user->username,
+                    'contact' => $sale->user->contact_number,
+                    'order_date' => $sale->created_at->format('Y-m-d H:i:s'),
+                    'delivery_method' => $sale->delivery_method,
+                    'merchant_fee' => $sale->delivery_method ? 25.00 : 0.00,
+                    'status' => $sale->status,
+                    'beverages' => $sale->salesDetails->map(function ($detail) {
+                        return [
+                            'name' => $detail->product->product_name,
+                            'quantity' => $detail->quantity,
+                            'price' => $detail->price
+                        ];
+                    })->toArray(),
+                    'total' => $sale->total_order
+                ];
+            });
 
-public function index()
-{
-    $users = [
-        (object) [
-            'id' => 1,
-            'name' => 'John Doe',
-            'username' => 'john.doe@example.com',
-            'contact' => '+1234567890',
-        ],
-        (object) [
-            'id' => 2,
-            'name' => 'Jane Smith',
-            'username' => 'jane.smith@example.com',
-            'contact' => '+9876543210',
-        ],
-        (object) [
-            'id' => 3,
-            'name' => 'Alice Johnson',
-            'username' => 'alice.johnson@example.com',
-            'contact' => '+1122334455',
-        ],
-    ];
+        // Calculate summary statistics
+        $totalSold = $transactions->where('status', true)->sum('total');
+        $totalTransactions = $transactions->count();
+        $completedCount = $transactions->where('status', true)->count();
+        $cancelledCount = $transactions->where('status', false)->count();
 
-    // Mock transactions for testing
-    $transactions = [
-        (object) [
-            'id' => 101,
-            'name' => 'John Doe',
-            'username' => 'john.doe@example.com',
-            'contact' => '+1234567890',
-            'order_date' => '2023-10-01 10:20:30',
-            'delivery_method' => false,
-            'merchant_fee' => false,
-            'status' => true,
-            'beverages' => [
-                ['name' => 'Product A', 'quantity' => 2, 'price' => 39.00],
-                ['name' => 'Product B', 'quantity' => 1, 'price' => 39.00],
-            ],
-        ],
-        (object) [
-            'id' => 102,
-            'name' => 'Jane Smith',
-            'username' => 'jane.smith@example.com',
-            'contact' => '+9876543210',
-            'order_date' => '2023-10-02 10:20:30',
-            'delivery_method' => false,
-            'merchant_fee' => 0.00,
-            'status' => true,
-            'beverages' => [
-                ['name' => 'Product C', 'quantity' => 4, 'price' => 39.00],
-            ],
-        ],
-        (object) [
-            'id' => 103,
-            'name' => 'Alice Johnson',
-            'username' => 'alice.johnson@example.com',
-            'contact' => '+9876543210',
-            'order_date' => '2023-10-02 10:20:30',
-            'delivery_method' => false,
-            'merchant_fee' => 0.00,
-            'status' => false,
-            'beverages' => [
-                ['name' => 'Product D', 'quantity' => 5, 'price' => 39.00],
-            ],
-        ],
-    ];
-      // Calculate counts
-      $completedCount = count(array_filter($transactions, fn($transaction) => $transaction->status));
-      $cancelledCount = count(array_filter($transactions, fn($transaction) => !$transaction->status));
-      
-
-    // Calculate the total for each transaction
-    foreach ($transactions as $transaction) {
-        $total = 0;
-
-        if (isset($transaction->beverages) && is_array($transaction->beverages)) {
-            foreach ($transaction->beverages as $beverage) {
-                $total += $beverage['quantity'] * $beverage['price'];
-            }
-        }
-
-        if ($transaction->delivery_method) {
-            $total += 25;
-        }
-
-        $transaction->total = $total;
+        return view('Pages.Transaction.index', compact(
+            'users',
+            'transactions',
+            'completedCount',
+            'cancelledCount',
+            'totalSold',
+            'totalTransactions',
+            'totalUsers'
+        ));
     }
 
-    
+    public function getUserTransactions($userId)
+    {
+        $transactions = SalesModel::with(['user', 'salesDetails.product'])
+            ->where('user_id', $userId)
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($sale) {
+                return [
+                    'id' => $sale->id,
+                    'date' => $sale->created_at->format('Y-m-d'),
+                    'time' => $sale->created_at->format('H:i:s'),
+                    'delivery_method' => $sale->delivery_method,
+                    'merchant_fee' => $sale->merchant_fee,
+                    'status' => $sale->status,
+                    'total' => $sale->total_order
+                ];
+            });
 
-    // Pass the users and transactions to the view
-    return view('Pages.Transaction.index', compact('users', 'transactions'));
-}
+        return response()->json(['transactions' => $transactions]);
+    }
 
-     
-        public function getTransactionDetails($transactionId)
-        {
-            // Mock transaction details for testing
-            $transactionDetails = [
-                101 => [
-                    'delivery_method' => false,
-                    'merchant_fee' => false,
-                    'beverages' => [
-                        ['name' => 'Product A', 'quantity' => 2, 'price' => 39.00],
-                        ['name' => 'Product B', 'quantity' => 1, 'price' => 39.00],
-                    ],
-                ],
-                102 => [
-                    'delivery_method' => false,
-                    'merchant_fee' => false,
-                    'beverages' => [
-                        ['name' => 'Product C', 'quantity' => 4, 'price' => 39.00],
-                    ],
-                ],
-                103 => [
-                    'delivery_method' => false,
-                    'merchant_fee' => false,
-                    'beverages' => [
-                        ['name' => 'Product D', 'quantity' => 5, 'price' => 39.00],
-                    ],
-                ],
+    public function getTransactionDetails($transactionId)
+    {
+        $transaction = SalesModel::with(['user', 'salesDetails.product'])
+            ->find($transactionId);
+
+        if (!$transaction) {
+            return response()->json(['error' => 'Transaction not found'], 404);
+        }
+
+        // Set merchant fee based on delivery method
+        $merchantFee = $transaction->delivery_method ? 25.00 : 0.00;
+
+        // Calculate subtotal from beverages
+        $beverages = $transaction->salesDetails->map(function ($detail) {
+            $price = (float) $detail->price;
+            $quantity = (int) $detail->quantity;
+            return [
+                'name' => $detail->product->product_name,
+                'quantity' => $quantity,
+                'price' => $price,
+                'subtotal' => $price * $quantity
             ];
-        
-            $transaction = $transactionDetails[$transactionId] ?? null;
-        
-            if (!$transaction) {
-                return response()->json(['error' => 'Transaction not found'], 404);
-            }
+        })->toArray();
 
-            $transaction['merchant_fee'] ? 25.00 : 0.00;
-        
-            return response()->json($transaction);
-        }
-        
-    
-    // public function index($user_id)
-    // {
-    //     $transactions = SalesModel::where('user_id', $user_id)->orderBy('created_at', 'desc')->get();
+        $subtotal = collect($beverages)->sum('subtotal');
 
-    //     return view('Pages.Transaction.index', compact('transactions'));
-    // }
-// }
+        $details = [
+            'id' => $transaction->id,
+            'user' => [
+                'name' => $transaction->user->name,
+                'username' => $transaction->user->username,
+                'contact' => $transaction->user->contact_number
+            ],
+            'order_date' => $transaction->created_at->format('Y-m-d H:i:s'),
+            'delivery_method' => $transaction->delivery_method,
+            'merchant_fee' => $merchantFee,
+            'status' => $transaction->status,
+            'beverages' => $beverages,
+            'subtotal' => $subtotal,
+            'total_with_fee' => $subtotal + $merchantFee
+        ];
+
+        return response()->json($details);
     }
+
+    public function updateTransactionStatus($transactionId)
+    {
+        $transaction = SalesModel::find($transactionId);
+
+        if (!$transaction) {
+            return response()->json(['error' => 'Transaction not found'], 404);
+        }
+
+        $transaction->status = !$transaction->status;
+        $transaction->save();
+
+        return response()->json([
+            'success' => true,
+            'newStatus' => $transaction->status,
+            'message' => 'Transaction status updated successfully'
+        ]);
+    }
+}

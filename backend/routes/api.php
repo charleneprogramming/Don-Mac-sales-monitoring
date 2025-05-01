@@ -30,6 +30,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/sales', [SalesAPIController::class, 'findAll']);
     Route::get('/sales/{userID}', [SalesAPIController::class, 'findByUserID']);
     Route::get('/sales/products/{userId}', [SalesAPIController::class, 'getProducts']);
+    Route::get('/sales/transactions/{userId}', [App\Http\Controllers\API\SalesController::class, 'getUserTransactions']);
+    Route::put('/sales/cancel/{id}', [SalesAPIController::class, 'cancelSale']);
 
     // User routes
     Route::get('/display/users', [UsersAPIController::class, 'findAll']);

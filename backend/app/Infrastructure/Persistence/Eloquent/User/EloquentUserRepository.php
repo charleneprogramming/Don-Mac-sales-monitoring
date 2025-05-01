@@ -13,11 +13,9 @@ class EloquentUserRepository implements UserRepository
 {
     public function create(User $user): void
     {
-
         $data = new UserModel;
         $data->username = $user->getUsername();
         $data->password = $user->getPassword();
-        $data->isAdmin = $user->getIsAdmin();
         $data->name = $user->getName();
         $data->contact_number = $user->getContactNumber();
         $data->save();
@@ -47,10 +45,9 @@ class EloquentUserRepository implements UserRepository
         }
 
         return new User(
-            $data->id, 
+            $data->id,
             $data->username,
             $data->password,
-            $data->isAdmin,
             $data->name,
             $data->contact_number);
     }
@@ -64,7 +61,6 @@ class EloquentUserRepository implements UserRepository
                 $user->id,
                 $user->username,
                 $user->password,
-                $user->isAdmin,
                 $user->name,
                 $user->contact_number
             );
@@ -92,7 +88,6 @@ class EloquentUserRepository implements UserRepository
                 'username' => $user->username,
                 'name' => $user->name,
                 'contact_number' => $user->contact_number,
-                'isAdmin' => $user->isAdmin,
             ],
             'token' => $token,
             'token_type' => 'Bearer',

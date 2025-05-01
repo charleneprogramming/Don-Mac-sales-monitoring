@@ -9,10 +9,25 @@ export function useTransactions() {
     useEffect(() => {
         const fetchTransactions = async () => {
             try {
-                const response = await fetch('http://localhost:8000/api/sales/{userID}');
+                const token = localStorage.getItem('token');
+                const userId = localStorage.getItem('userId');
+
+                if (!token || !userId) {
+                    throw new Error('Authentication required');
+                }
+
+                const response = await fetch(`http://localhost:8000/api/sales/transactions/${userId}`, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
                 if (!response.ok) {
                     throw new Error('Failed to fetch transactions');
                 }
+
                 const data = await response.json();
                 setTransactions(data);
                 setLoading(false);

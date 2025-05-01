@@ -30,6 +30,7 @@
                         <form id="userForm" action="{{ route('users.store') }}" method="POST" class="mb-5">
                             @csrf
                             <input type="hidden" id="userId" name="user_id">
+                            <input type="hidden" name="_method" id="method" value="POST">
 
                             <div class="mb-3">
                                 <label for="username" class="form-label">Username</label>
@@ -86,22 +87,6 @@
                                 @enderror
                             </div>
 
-                            <div class="mb-3">
-                                <label for="user_type" class="form-label">User Type</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-user-shield"></i></span>
-                                    <select name="user_type" id="user_type"
-                                        class="form-control @error('user_type') is-invalid @enderror">
-                                        <option value="">Select User Type</option>
-                                        <option value="1">Admin</option>
-                                        <option value="2">Cashier User</option>
-                                    </select>
-                                </div>
-                                @error('user_type')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
-                            </div>
-
                             <div class="d-grid gap-2">
                                 <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
                                     <i class="fas fa-plus-circle me-2"></i>Create User
@@ -136,11 +121,10 @@
                                         <tr>
                                             <td>{{ $user->username }}</td>
                                             <td>{{ $user->created_at->format('Y-m-d H:i:s') }}</td>
-                                            <td>{{ $user->isAdmin == 1 ? 'Admin' : 'Cashier User' }}</td>
+                                            <td>{{ $user->isAdmin ? 'Admin' : 'Cashier' }}</td>
                                             <td>
                                                 <button type="button" class="btn btn-warning btn-sm edit-user"
-                                                    data-id="{{ $user->id }}" data-username="{{ $user->username }}"
-                                                    data-user-type="{{ $user->isAdmin ? '1' : '2' }}">
+                                                    data-id="{{ $user->id }}" data-username="{{ $user->username }}">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
                                                 <form action="{{ route('users.destroy', $user->id) }}" method="POST"
@@ -178,31 +162,20 @@
                 button.addEventListener('click', function() {
                     const id = this.dataset.id;
                     const usernameValue = this.dataset.username;
-                    const userType = this.dataset.userType;
 
                     // Update form for editing
                     form.action = `/users/${id}`;
                     userId.value = id;
                     username.value = usernameValue;
-                    document.getElementById('user_type').value = userType;
                     password.value = '';
                     password.placeholder = 'Enter new password (leave blank to keep current)';
+                    document.getElementById('method').value = 'PUT';
 
                     // Update UI for editing mode
                     submitBtn.innerHTML = '<i class="fas fa-save me-2"></i>Update User';
                     submitBtn.classList.remove('btn-primary');
                     submitBtn.classList.add('btn-success');
                     cancelBtn.classList.remove('d-none');
-
-                    // Add method override for PUT request
-                    let methodInput = form.querySelector('input[name="_method"]');
-                    if (!methodInput) {
-                        methodInput = document.createElement('input');
-                        methodInput.type = 'hidden';
-                        methodInput.name = '_method';
-                        form.appendChild(methodInput);
-                    }
-                    methodInput.value = 'PUT';
                 });
             });
 
@@ -232,16 +205,11 @@
                 form.action = "{{ route('users.store') }}";
                 userId.value = '';
                 password.placeholder = 'Enter password';
+                document.getElementById('method').value = 'POST';
                 submitBtn.innerHTML = '<i class="fas fa-plus-circle me-2"></i>Create User';
                 submitBtn.classList.remove('btn-success');
                 submitBtn.classList.add('btn-primary');
                 cancelBtn.classList.add('d-none');
-
-                // Remove method override
-                const methodInput = form.querySelector('input[name="_method"]');
-                if (methodInput) {
-                    methodInput.remove();
-                }
             }
         });
     </script>
